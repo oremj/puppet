@@ -93,6 +93,7 @@ describe provider_class do
     before do
       @resource[:name] = "fake_package"
       @url = "git+https://example.com/fake_package.git"
+      @url2 = "http://example.com/fake_package.tar.gz"
     end
 
     it "should install" do
@@ -100,6 +101,14 @@ describe provider_class do
       @resource[:source] = nil
       @provider.expects(:lazy_pip).
         with("install", '-q', "fake_package")
+      @provider.install
+    end
+
+    it "should install from URL" do
+      @resource[:ensure] = :installed
+      @resource[:source] = @url2
+      @provider.expects(:lazy_pip).
+        with("install", '-q', "#{@url2}")
       @provider.install
     end
 
